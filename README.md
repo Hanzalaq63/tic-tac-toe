@@ -1,63 +1,62 @@
-board = [' ' for x in range(9)]
+from tkinter import *
 
-def print_board():
-    row1 = "| {} | {} | {} |".format(board[0], board[1], board[2])
-    row2 = "| {} | {} | {} |".format(board[3], board[4], board[5])
-    row3 = "| {} | {} | {} |".format(board[6], board[7], board[8])
+w =Tk()
+w.title('Tic Tok Toe Game')
+#w.geometry('700x700')
 
-    print()
-    print(row1)
-    print(row2)
-    print(row3)
-    print()
+def callback(r,c):
+    global player
+    if player =="X" and state[r][c]==0 and stop_game== False:
+        b[r][c].config(text="X",fg='black',bg='white')
+        state[r][c]="X"
+        player = "O"
 
-def player_move(icon):
-    if icon == 'X':
-        number = 1
-    elif icon == 'O':
-        number = 2
-    print("Your turn player {}".format(number))
-    choice = int(input("Enter your move (1-9): ").strip())
-    if board[choice - 1] == ' ':
-        board[choice - 1] = icon
-    else:
-        print()
-        print("That space is already taken!")
+    if player =="O" and state[r][c]==0 and stop_game== False:
+        b[r][c].config(text="O",fg='black',bg='white')
+        state[r][c]="O"
+        player = "X"
 
-def is_victory(icon):
-    if (board[0] == icon and board[1] == icon and board[2] == icon) or \
-       (board[3] == icon and board[4] == icon and board[5] == icon) or \
-       (board[6] == icon and board[7] == icon and board[8] == icon) or \
-       (board[0] == icon and board[3] == icon and board[6] == icon) or \
-       (board[1] == icon and board[4] == icon and board[7] == icon) or \
-       (board[2] == icon and board[5] == icon and board[8] == icon) or \
-       (board[0] == icon and board[4] == icon and board[8] == icon) or \
-       (board[2] == icon and board[4] == icon and board[6] == icon):
-        return True
-    else:
-        return False
+    check_winner()
 
-def is_draw():
-    if ' ' not in board:
-        return True
-    else:
-        return False
+def check_winner():
+    global stop_game
+    for i in range(3):
+        if state[i][0]==state[i][1]==state[i][2]!=0:
+            b[i][0].config(bg='light green')
+            b[i][1].config(bg='light green')
+            b[i][2].config(bg='light green')
+            stop_game= True
+    for i in range(3):
 
-while True:
-    print_board()
-    player_move('X')
-    print_board()
-    if is_victory('X'):
-        print("X wins! Congratulations!")
-        break
-    elif is_draw():
-        print("It's a draw!")
-        break
-    player_move('O')
-    if is_victory('O'):
-        print_board()
-        print("O wins! Congratulations!")
-        break
-    elif is_draw():
-        print("It's a draw!")
-        break
+        if state[0][i]==state[1][i]==state[2][i]!=0:
+            b[0][i].config(bg='light green')
+            b[1][i].config(bg='light green')
+            b[2][i].config(bg='light green')
+            stop_game= True
+
+        if state[0][0]==state[1][1]==state[2][2]!=0:
+            b[0][0].config(bg='light green')
+            b[1][1].config(bg='light green')
+            b[2][2].config(bg='light green')
+            stop_game= True
+
+        if state[0][2]==state[1][1]==state[2][0]!=0:
+            b[0][2].config(bg='light green')
+            b[1][1].config(bg='light green')
+            b[2][0].config(bg='light green')
+            stop_game= True             
+b = [[0,0,0],
+     [0,0,0],
+     [0,0,0]]
+
+state = [[0,0,0],
+         [0,0,0],
+         [0,0,0]]
+
+for i in range(3):
+    for j in range(3):
+        b[i][j]= Button(font=("Arial",60),width=4,bg='light pink',command= lambda r=i,c=j:callback(r,c))
+        b[i][j].grid(row=i,column=j)
+player ="X"
+stop_game = False
+mainloop()
